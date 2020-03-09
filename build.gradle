@@ -1,0 +1,103 @@
+buildscript {
+    repositories {
+        mavenCentral()
+                maven {
+            name = "MavenRepo"
+            url = "https://repo.maven.apache.org/maven2"
+        }
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+version = newNuclearControlVersion
+group= "com.shedar.IC2NuclearControl"
+archivesBaseName = "IC2NuclearControl"
+minecraft {
+    version = forgeVersion
+	runDir = "eclipse"
+	replace "@VERSION@", project.version
+}
+
+repositories {
+	maven {
+		name = "ic2"
+		url = "http://maven.ic2.player.to/"
+	}
+	maven { 
+        name = "chickenbones" 
+        url = "http://chickenbones.net/maven/" 
+	}
+
+	maven {
+		name "OC"
+		url "http://maven.cil.li/"
+	}
+}
+
+configurations {
+    provided
+    embedded
+    compile.extendsFrom provided, embedded
+    mods
+
+}
+
+dependencies {
+	compile ic2Version
+	provided fileTree(dir: 'lib/', include:'*.jar')
+	compile codeChickenCoreVersion
+	compile notEnoughItemsVersion
+	compile codeChickenLibVersion
+	compile files(aeVersion)
+	compile files(cofhCoreVersion)
+	compile files(brVersion)  
+	compile files(mekVersion)
+	compile files(buildcraftVersion)
+}
+
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+task libJar(type: Jar) {
+    from(sourceSets.main.java) {
+        include "shedar/mods/ic2/nuclearcontrol/api/**/*"
+    }
+    classifier = 'api'
+}
+
+// Tell the artifact system about our extra jars
+artifacts {
+    archives deobfJar, libJar
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs){
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs){
+        exclude 'mcmod.info'
+    }
+
+
+}
