@@ -23,7 +23,8 @@ public class ConfigurationHandler {
 			IC2NuclearControl.instance.maxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
 			IC2NuclearControl.instance.allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi").getString().replaceAll(" ", "");
 			IC2NuclearControl.instance.remoteThermalMonitorEnergyConsumption = configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
-			IC2NuclearControl.instance.screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod",20).getInt();
+			IC2NuclearControl.instance.screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod", 20).getInt();
+			IC2NuclearControl.instance.dataRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "sensorDataRefreshPeriod", 4, "can not be longer than infoPanelRefreshPeriod [default: 4]").getInt();
 			IC2NuclearControl.instance.rangeTriggerRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
 			IC2NuclearControl.instance.SMPMaxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
 			IC2NuclearControl.instance.disableCapes = configuration.get(Configuration.CATEGORY_GENERAL, "disableCapes", false).getBoolean(false);
@@ -31,11 +32,11 @@ public class ConfigurationHandler {
 			//IC2NuclearControl.isHttpSensorAvailableServer = configuration.getBoolean("isHttpSensorAvailableServer", Configuration.CATEGORY_GENERAL, true, "Turns on/off the recipes for the web upgrade server side");
 			//IC2NuclearControl.instance.httpSensorKey = configuration.get(Configuration.CATEGORY_GENERAL, "httpSensorKey", UUID.randomUUID().toString().replace("-", "")).getString();
 			IC2NuclearControl.instance.recipes = configuration.getString("recipes", Configuration.CATEGORY_GENERAL, "normal", "Valid inputs: normal, old or gregtech");
-		}catch(Exception e) {
+		} catch (Exception e) {
 			IC2NuclearControl.logger.error(
 					"Mod has a problem loading it's configuration", e);
-		}finally {
-			if(configuration.hasChanged()) {
+		} finally {
+			if (configuration.hasChanged()) {
 				configuration.save();
 			}
 		}
